@@ -1,0 +1,11 @@
+---
+madlib_major_version: 1
+madlib_minor_version: 15
+madlib_patch_version: 1
+madlib_gpdb_version: gp4.3orca
+madlib_rhel_version: rhel5
+madlib_database_name: testdb
+madlib_mdw_hostname: mdw4
+
+# madlib-1.15.1-gp5-rhel6-x86_64.tar.gz
+# madlib-1.15.1-gp4.3orca-rhel5-x86_64.tar.gz

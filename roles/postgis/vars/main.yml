@@ -1,0 +1,10 @@
+---
+postgis_prefix_major_version: ossv
+postgis_major_version: 2
+postgis_minor_version: 0
+postgis_patch_version: 3_pv2.0.2
+postgis_gpdb_version: _gpdb4.3orca
+postgis_rhel_version: rhel5
+postgis_database_name: testdb
+
+# postgis-ossv2.0.3_pv2.0.2_gpdb4.3orca-rhel5-x86_64.gppkg

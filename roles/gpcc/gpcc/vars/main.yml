@@ -1,0 +1,11 @@
+---
+
+gpcc_major_version: 4
+gpcc_minor_version: 7.0
+# gpcc_build_version:
+
+gpdb_initdb_only_single: false
+gpdb_initdb_with_standby: true
+gpcc_network_range: "192.168.0.0/24"
+gpcc_subnet_range: 24
+gpcc_password: "changeme"

@@ -1,0 +1,10 @@
+[master]
+mdw4 ansible_ssh_host=192.168.0.111
+
+[standby]
+smdw4 ansible_ssh_host=192.168.0.112
+
+[segments]
+sdw4-01 ansible_ssh_host=192.168.0.113
+sdw4-02 ansible_ssh_host=192.168.0.114
+sdw4-03 ansible_ssh_host=192.168.0.115
