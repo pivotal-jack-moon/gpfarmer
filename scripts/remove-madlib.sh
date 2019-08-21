@@ -10,4 +10,3 @@ export madlib_pkgname=$(/usr/local/greenplum-db/bin/gppkg -q --all | tail -1);
 /usr/local/greenplum-db/bin/gppkg -q --all
 rm -rf /usr/local/greenplum-db/madlib
 "
-

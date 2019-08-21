@@ -650,7 +650,7 @@
 
 - name: Initialize Greenplum Database cluster with standby master
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && gpinitsystem -c /home/gpadmin/gpinitsystem_config -a {{ gpdb_spread_mirrors }} -h /home/gpadmin/hostfile -s {{ smdw_name }} )
+  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && gpinitsystem -c /home/gpadmin/gpinitsystem_config -a {{ gpdb_spread_mirrors }} -h /home/gpadmin/hostfile -s {{ smdw_hostname }} )
   async: 300
   poll: 5
   register: init_db

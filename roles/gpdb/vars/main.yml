@@ -8,13 +8,6 @@ gpdb_mirror_enable: true
 gpdb_spread_mirrors: "-S"
 
 # if you change the version, Ansible will attempt a database upgrade
-
-# greenplum-db-4.3.8.0-build-1-RHEL5-x86_64.zip
-# gpdb_major_version: 4
-#gpdb_minor_version: 3.8.0
-#gpdb_build_version: 1
-#gpdb_rhel_name: 'RHEL5'
-
 # greenplum-db-4.3.9.0-build-1-RHEL5-x86_64.zip
 #gpdb_major_version: 4
 #gpdb_minor_version: 3.9.0
@@ -34,18 +27,6 @@ gpdb_spread_mirrors: "-S"
 #gpdb_minor_version: 3.11.1
 #gpdb_build_version: 1
 #gpdb_rhel_name: 'rhel5'
-
-# files/greenplum-db-4.3.16.1-rhel5-x86_64.zip
-# gpdb_major_version: 4
-# gpdb_minor_version: 3.16.1
-# gpdb_build_version:
-# gpdb_rhel_name: 'rhel5'
-
-# files/greenplum-db-4.3.17.1-rhel5-x86_64.zip
-# gpdb_major_version: 4
-# gpdb_minor_version: 3.17.1
-# gpdb_build_version:
-# gpdb_rhel_name: 'rhel5'
 
 # files/greenplum-db-4.3.21.0-rhel5-x86_64.zip
 # gpdb_major_version: 4
@@ -72,27 +53,9 @@ gpdb_build_version:
 gpdb_rhel_name: 'rhel5'
 gpdb_binary_type: 'zip'
 
-# files/greenplum-db-4.3.30.4-rhel5-x86_64.zip
-# gpdb_major_version: 4
-# gpdb_minor_version: 3.26.0
-# gpdb_build_version:
-# gpdb_rhel_name: 'rhel5'
-
-# files/greenplum-db-5.16.0-rhel7-x86_64.zip
-# gpdb_major_version: 5
-# gpdb_minor_version: 16.0
-# gpdb_build_version:
-# gpdb_rhel_name: 'rhel7'
-
 # files/greenplum-db-6.0.0-beta.1-rhel7-x86_64.rpm
 # gpdb_major_version: 6
 # gpdb_minor_version: 0.0-beta.1
-# gpdb_build_version:
-# gpdb_rhel_name: 'rhel7'
-
-# files/greenplum-db-5.16.0-rhel7-x86_64.zip
-# gpdb_major_version: 5
-# gpdb_minor_version: 7.1
 # gpdb_build_version:
 # gpdb_rhel_name: 'rhel7'
 
@@ -110,13 +73,14 @@ gpdb_binary_type: 'zip'
 #gpdb_rhel_name: 'rhel7'
 #gpdb_binary_type: 'rpm'
 
-smdw_name: "smdw4"
+smdw_hostname: "smdw4"
 seg_serialized_install: False
 gpdb_initdb_single: False
 gpdb_initdb_with_standby: True
 gpdb_network_range: "192.168.0.0"
 gpdb_admin_password: "changeme"
 
+# kernel parameters for greenplum database
 gpdb_kernel_shmmax: "kernel.shmmax = 500000000"
 gpdb_kernel_shmmni: "kernel.shmmni = 4096"
 gpdb_kernel_shmall: "kernel.shmall = 4000000000"

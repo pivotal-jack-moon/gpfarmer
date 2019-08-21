@@ -1,5 +1,8 @@
+#!/bin/bash
 
-ssh gpadmin@mdw4 "source /usr/local/greenplum-db/greenplum_path.sh && source /usr/local/greenplum-cc-web/gpcc_path.sh && gpcc stop ;
+HOST_NAME="mdw4"
+
+ssh gpadmin@$HOST_NAME "source /usr/local/greenplum-db/greenplum_path.sh && source /usr/local/greenplum-cc-web/gpcc_path.sh && gpcc stop ;
 rm -rf /usr/local/greenplum-cc-web* ;
 
 # su - gpadmin
@@ -18,4 +21,3 @@ rm -rf $MASTER_DATA_DIRECTORY/gpperfmon/logs/* ;
 
 dropdb gpperfmon ;
 "
-
