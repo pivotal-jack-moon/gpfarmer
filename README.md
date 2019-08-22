@@ -174,4 +174,5 @@ $ make install
 
 # Planning
 Playbook to remove GPDB and other extensions
+
 Playbook to update GPDB and other extensions
