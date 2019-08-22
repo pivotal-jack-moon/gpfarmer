@@ -37,7 +37,25 @@ $ sudo brew install ansible
 $ sudo yum install ansible
 
 # How to download / configure run gpfarmer
+git clone https://github.com/pivotal-jack-moon/gpfarmer
 
+$ cd gpfarmer
+
+$ vi ansible-hosts
+
+$ vi role/gpdb/var/mail.yml
+
+$ vi role/gpcc/var/mail.yml
+
+$ vi role/gptext/var/mail.yml
+
+$ vi role/postgis/var/mail.yml
+
+$ vi role/madlib/var/mail.yml
+
+$ make init
+
+$ make install
 
 # Planning
 Playbook to remove GPDB and other extensions
