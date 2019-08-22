@@ -42,11 +42,28 @@ $ sudo yum install ansible
 
 
 # Download / configure run gpfarmer
-git clone https://github.com/pivotal-jack-moon/gpfarmer
+$ git clone https://github.com/pivotal-jack-moon/gpfarmer
 
 $ cd gpfarmer
 
 $ vi ansible-hosts
+~~~
+[all:vars]
+ssh_key_filename="id_rsa"
+remote_machine_username="gpadmin"
+remote_machine_password="changeme"
+
+[master]
+mdw6 ansible_ssh_host=192.168.0.61
+
+[standby]
+smdw6 ansible_ssh_host=192.168.0.62
+
+[segments]
+sdw6-1 ansible_ssh_host=192.168.0.63
+sdw6-2 ansible_ssh_host=192.168.0.64
+sdw6-3 ansible_ssh_host=192.168.0.65
+~~~
 
 $ vi role/gpdb/var/main.yml
 ~~~
@@ -102,7 +119,7 @@ gptext_gpdb_version:
 gptext_java_version: 1.8.0
 gptext_rhel_name: rhel6
 gptext_database_name: testdb
-gptext_all_hosts: "mdw6 smdw6 sdw6-01 sdw6-02 sdw6-03"
+gptext_all_hosts: "mdw6 smdw6 sdw6-1 sdw6-2 sdw6-3"
 ~~~
 
 $ vi role/madlib/var/main.yml
@@ -133,6 +150,23 @@ postgis_database_name: testdb
 # postgis-ossv2.0.3_pv2.0.2_gpdb4.3orca-rhel5-x86_64.gppkg
 ~~~
 
+$ vi install-host.yml
+~~~
+---
+- hosts: all
+  become: yes
+  roles:
+    - gpdb
+    - gptext
+
+- hosts: mdw6
+  become: yes
+  roles:
+    - gpcc
+    - madlib
+    - postgis
+~~~
+
 $ make init
 
 $ make install
@@ -140,6 +174,4 @@ $ make install
 
 # Planning
 Playbook to remove GPDB and other extensions
-
 Playbook to update GPDB and other extensions
-
