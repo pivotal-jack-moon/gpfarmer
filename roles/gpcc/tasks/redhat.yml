@@ -136,7 +136,7 @@
   become_user: gpadmin
   shell: ( openssl req -newkey rsa:2048 -x509 -keyout /home/gpadmin/certs/cert.pem -out /home/gpadmin/certs/cert.pem -days 3650 -nodes -subj "/C=KR/ST=Seoul/L=GANGNAM/O=Pivotal/CN=jtest.pivotal.io/emailAddress=jomoon@pivotal.io" )
 
-- name: Accept license and make unattended installation possible
+- name: Install Comment Center Software 4 and later version
   become_user: gpadmin
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && /home/gpadmin/install_gpcc.sh )
   when: gpcc_installed.stat.exists != True and gpcc_major_version > 3
