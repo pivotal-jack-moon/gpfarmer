@@ -14,8 +14,8 @@ Baremetal
 RHEL and CentOS 5/6/7
 
 # Prerequisite
-MacOS or Fedora/CentOS/RHEL installed with ansible
-At least three supported OS should be prepared with yum repository configured
+MacOS or Fedora/CentOS/RHEL installed with ansible.
+At least three supported OS should be prepared with yum repository configured.
 
 # How to prepare ansible host to run gpfarmer
 * MacOS
