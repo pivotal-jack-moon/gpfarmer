@@ -242,19 +242,19 @@
     line: "webserver_port: 28080"
   when: gpcc_setup_cc_sne == True and gpcc_major_version <= 3
 
-- name: Setup Command Center instance
+- name: Setup Command Center instance for 3 and ealier versions
   become_user: gpadmin
   changed_when: False
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-cc-web/gpcc_path.sh && gpcmdr --setup --config_file /home/gpadmin/gpcmdr_setup.ini )
   when: gpcc_setup_cc_sne == True and gpcc_major_version <= 3
 
-- name: Start Command Center instance
+- name: Start Command Center instance for and later versions
   become_user: gpadmin
   changed_when: False
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-cc-web/gpcc_path.sh && gpcc start )
   when: gpcc_setup_cc_sne == True and gpcc_major_version > 3
 
-- name: Start Command Center instance for version 3
+- name: Start Command Center instance for 3 and ealier versions
   become_user: gpadmin
   changed_when: False
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-cc-web/gpcc_path.sh && gpcmdr --start sne )
