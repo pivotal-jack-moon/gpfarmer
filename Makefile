@@ -2,7 +2,7 @@
 
 USERNAME=jomoon
 COMMON="yes"
-include ./*.mk
+# include ./*.mk
 
 GPHOSTS := $(shell grep -i '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ./ansible-hosts | sed -e "s/ ansible_ssh_host=/,/g")
 

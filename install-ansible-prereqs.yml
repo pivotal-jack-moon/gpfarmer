@@ -1,4 +1,4 @@
-# deploy ssh key and make sudo work without password
+# Deploy ssh key and make sudo work without password
 # install 'sshpass' package first on your local system
 
 # ssh -o UserKnownHostsFile=./known_hosts <user>@<host>
@@ -94,12 +94,12 @@
   become_user: gpadmin
   gather_facts: false
   tasks:
-    - name: check ssh to remote hosts works
+    - name: Check ssh to remote hosts works
       shell: "hostname; id"
       register: ssh_connection_test
       failed_when: ssh_connection_test.rc != 0
 
-    - name: print the connectivity test results
+    - name: Print the connectivity test results
       debug:
         var: ssh_connection_test.stdout_lines
 
@@ -109,7 +109,7 @@
   become: no
   tasks:
     - block:
-      - name: install sudo (Red Hat)
+      - name: Install sudo (Red Hat)
         yum: name={{ item }} state=present
         with_items:
           - sudo
@@ -117,7 +117,7 @@
         become_method: su
         become_user: root
 
-      - name: add user to 'wheel' group (Red Hat)
+      - name: Add user to 'wheel' group (Red Hat)
         user:
           name: "{{ ansible_user }}"
           group: wheel
@@ -125,7 +125,7 @@
         become_method: su
         become_user: root
 
-      - name: add group to /etc/sudoers file without password (Red Hat)
+      - name: Add group to /etc/sudoers file without password (Red Hat)
         # this will overwrite the first line which starts with %wheel
         lineinfile: "dest=/etc/sudoers state=present regexp='^%wheel' line='%wheel ALL=(ALL) NOPASSWD: ALL'"
         become: true
@@ -134,7 +134,7 @@
       when: ansible_distribution == "RedHat" or ansible_distribution == "CentOS"
 
     - block:
-      - name: read /etc/group entries
+      - name: Read /etc/group entries
         shell: "/usr/bin/getent group | grep ^sudo{{':'}} | cut -f4 -d{{':'}}"
         register: etc_group
         changed_when: false
@@ -147,7 +147,7 @@
       - block:
         # the current user is not in /etc/group in the sudo group
         # we assume that 'su' works
-        - name: install sudo (Debian)
+        - name: Install sudo (Debian)
           apt: name={{ item }} state=present
           with_items:
             - sudo
@@ -155,7 +155,7 @@
           become_method: su
           become_user: root
 
-        - name: add user to 'sudo' group (Debian)
+        - name: Add user to 'sudo' group (Debian)
           user:
             name: "{{ ansible_user }}"
             group: sudo
@@ -163,7 +163,7 @@
           become_method: su
           become_user: root
 
-        - name: add group to /etc/sudoers file without password (Debian)
+        - name: Add group to /etc/sudoers file without password (Debian)
           # this will overwrite the first line which starts with %sudo
           lineinfile: "dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'"
           become: true
@@ -174,7 +174,7 @@
       - block:
         # the current user is already in /etc/group in the sudo group
         # we assume that 'sudo' works, but maybe with password
-        - name: add group to /etc/sudoers file without password (Debian)
+        - name: Add group to /etc/sudoers file without password (Debian)
           # this will overwrite the first line which starts with %sudo
           lineinfile: "dest=/etc/sudoers state=present regexp='^%sudo' line='%sudo ALL=(ALL) NOPASSWD: ALL'"
           become: true
@@ -184,14 +184,14 @@
 
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-    - name: create .bash_history if not exist
+    - name: Create .bash_history if not exist
       copy:
         dest: /home/{{ ansible_user }}/.bash_history
         content: ""
         force: no
       become: false
 
-    - name: add sudo line to bash history
+    - name: Add sudo line to bash history
       lineinfile:
         dest: /home/{{ ansible_user }}/.bash_history
         line: "sudo /bin/bash --login"

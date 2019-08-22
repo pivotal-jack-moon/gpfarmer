@@ -1,5 +1,4 @@
 ---
-
 # Install Greenplum Database on Red Hat / CentOS
 
 # new installation: /usr/local/greenplum-db must not exist
@@ -37,7 +36,7 @@
     binary_installer_file: greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }}-{{ gpdb_rhel_name }}-x86_64
   when: gpdb_build_version is not defined or (gpdb_build_version is defined and gpdb_build_version == None)
 
-- name: Get the specific ip address to be used
+- name: Get the specific ip addresses to be used
   set_fact:
     prod_ip_addr: "{{ item }}"
   when: "item | ipaddr(' {{ gpdb_network_range }}/24')"
@@ -125,26 +124,26 @@
     line: "{{ item.line }}"
     state: "{{ item.state }}"
   with_items:
-    - { regexp: '^kernel.shmmax', line: 'kernel.shmmax = 500000000', state: present }
-    - { regexp: '^kernel.shmmni', line: 'kernel.shmmni = 4096', state: present }
-    - { regexp: '^kernel.shmall', line: 'kernel.shmall = 4000000000', state: present }
-    - { regexp: '^kernel.sem', line: 'kernel.sem = 250 512000 100 2048', state: present }
-    - { regexp: '^kernel.sysrq', line: 'kernel.sysrq = 1', state: present }
-    - { regexp: '^kernel.core_uses_pid', line: 'kernel.core_uses_pid = 1', state: present }
-    - { regexp: '^kernel.msgmnb', line: 'kernel.msgmnb = 65536', state: present }
-    - { regexp: '^kernel.msgmax', line: 'kernel.msgmax = 65536', state: present }
-    - { regexp: '^kernel.msgmni', line: 'kernel.msgmni = 2048', state: present }
-    - { regexp: '^net.ipv4.tcp_syncookies', line: 'net.ipv4.tcp_syncookies = 1', state: present }
-    - { regexp: '^net.ipv4.ip_forward', line: 'net.ipv4.ip_forward = 0', state: present }
-    - { regexp: '^net.ipv4.conf.default.accept_source_route', line: 'net.ipv4.conf.default.accept_source_route = 0', state: present }
-    - { regexp: '^net.ipv4.tcp_tw_recycle', line: 'net.ipv4.tcp_tw_recycle = 1', state: present }
-    - { regexp: '^net.ipv4.tcp_max_syn_backlog', line: 'net.ipv4.tcp_max_syn_backlog = 4096', state: present }
-    - { regexp: '^net.ipv4.conf.all.arp_filter', line: 'net.ipv4.conf.all.arp_filter = 1', state: present }
-    - { regexp: '^net.ipv4.ip_local_port_range', line: 'net.ipv4.ip_local_port_range = 1025 65535', state: present }
-    - { regexp: '^net.core.netdev_max_backlog', line: 'net.core.netdev_max_backlog = 10000', state: present }
-    - { regexp: '^net.core.rmem_max', line: 'net.core.rmem_max = 2097152', state: present }
-    - { regexp: '^net.core.wmem_max', line: 'net.core.wmem_max = 2097152', state: present }
-    - { regexp: '^vm.overcommit_memory', line: 'vm.overcommit_memory = 2', state: present }
+    - { regexp: '^kernel.shmmax', line: '{{ gpdb_kernel_shmmax }}', state: present }
+    - { regexp: '^kernel.shmmni', line: '{{ gpdb_kernel_shmmni }}', state: present }
+    - { regexp: '^kernel.shmall', line: '{{ gpdb_kernel_shmall }}', state: present }
+    - { regexp: '^kernel.sem', line: '{{ gpdb_kernel_sem }}', state: present }
+    - { regexp: '^kernel.sysrq', line: '{{ gpdb_kernel_sysrq }}', state: present }
+    - { regexp: '^kernel.core_uses_pid', line: '{{ gpdb_kernel_core_uses_pid }}', state: present }
+    - { regexp: '^kernel.msgmnb', line: '{{ gpdb_kernel_msgmnb }}', state: present }
+    - { regexp: '^kernel.msgmax', line: '{{ gpdb_kernel_msgmax }}', state: present }
+    - { regexp: '^kernel.msgmni', line: '{{ gpdb_kernel_msgmni }}', state: present }
+    - { regexp: '^net.ipv4.tcp_syncookies', line: '{{ gpdb_net_ipv4_tcp_syncookies }}', state: present }
+    - { regexp: '^net.ipv4.ip_forward', line: '{{ gpdb_net_ipv4_ip_forward }}', state: present }
+    - { regexp: '^net.ipv4.conf.default.accept_source_route', line: '{{ gpdb_net_ipv4_conf_default_accept_source_route }}', state: present }
+    - { regexp: '^net.ipv4.tcp_tw_recycle', line: '{{ gpdb_net_ipv4_tcp_tw_recycle }}', state: present }
+    - { regexp: '^net.ipv4.tcp_max_syn_backlog', line: '{{ gpdb_net_ipv4_tcp_max_syn_backlog }}', state: present }
+    - { regexp: '^net.ipv4.conf.all.arp_filter', line: '{{ gpdb_net_ipv4_conf_all_arp_filter }}', state: present }
+    - { regexp: '^net.ipv4.ip_local_port_range', line: '{{ gpdb_net_ipv4_ip_local_port_range }}', state: present }
+    - { regexp: '^net.core.netdev_max_backlog', line: '{{ gpdb_net_core_netdev_max_backlog }}', state: present }
+    - { regexp: '^net.core.rmem_max', line: '{{ gpdb_net_core_rmem_max }}', state: present }
+    - { regexp: '^net.core.wmem_max', line: '{{ gpdb_net_core_wmem_max }}', state: present }
+    - { regexp: '^vm.overcommit_memory', line: '{{ gpdb_vm_overcommit_memory }}', state: present }
   notify:
     - reload sysctl
 
@@ -223,7 +222,6 @@
   changed_when: False
   when:
     - gpdb_install == True or gpdb_upgrade == True
-    #  - gpdb_major_version == 4 or gpdb_major_version == 5
     #  - inventory_hostname in groups['master']
 
 - name: Create new temp installer directory
@@ -231,7 +229,6 @@
   changed_when: False
   when:
     - gpdb_install == True or gpdb_upgrade == True
-    # - gpdb_major_version == 4 or gpdb_major_version == 5
     #  - inventory_hostname in groups['master']
 
 - block:
@@ -621,19 +618,11 @@
     - inventory_hostname in groups['master']
     - gpdb_initialized.stat.exists != True
     - gpdb_initdb_single == False and seg_serialized_install == True
-
   # changed_when: False
 
-  # when: gpdb_initialized.stat.exists != True and inventory_hostname in groups['master']
-  #failed_when: "'Successfully started 2 of 2 segment instances' not in init_db.stdout"
-  # 'async' and 'poll' do not work with 'failed_when'
-
-# need it really?
 - name: Repoint symlink to new Greenplum Database version
   file: path=/usr/local/greenplum-db src=/usr/local/greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }} state=link
   # when:
-  # - inventory_hostname in groups['standby']
-  # - inventory_hostname in groups['segments']
   # - gpseginstall_installed == True
 
 - name: Initialize Greenplum Database cluster
@@ -657,9 +646,6 @@
     - inventory_hostname in groups['master']
     - gpdb_initdb_with_standby == True
   failed_when: init_db.rc > 1
-
-  #failed_when: "'Successfully started 2 of 2 segment instances' not in init_db.stdout"
-  # 'async' and 'poll' do not work with 'failed_when'
 
 # the greenplum_path.sh from the new installation does not have $MASTER_DATA_DIRECTORY
 - name: Add MASTER_DATA_DIRECTORY to greenplum_path.sh
