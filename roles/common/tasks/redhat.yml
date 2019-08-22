@@ -34,7 +34,7 @@
 - name: Get the specific ip address
   set_fact:
     prod_ip_addr: "{{ item }}"
-  when: "item | ipaddr('192.168.0.0/24')"
+  when: "item | ipaddr('{{ common_network_range }}')"
   with_items: "{{ ansible_all_ipv4_addresses }}"
 
 - name: Add the inventory into /etc/hosts
@@ -44,7 +44,7 @@
     owner: root
     group: root
     mode: 0644
-    #  when: hostvars['item']['ansible_eth0']['ipv4'] is defined
+  # when: hostvars['item']['ansible_eth0']['ipv4'] is defined
 
 - name: basic packages
   yum: name={{ item }} state=present
@@ -65,21 +65,10 @@
     - m4
     - expect
     - nc
-    - java-1.6.0-openjdk
-    - java-1.6.0-openjdk-devel
-    - java-1.7.0-openjdk
-    - java-1.7.0-openjdk-devel
     - java-1.8.0-openjdk
     - java-1.8.0-openjdk-devel
 
   when: ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" ) and ansible_distribution_major_version|int >= 5
-    # - { package: epydoc }
-    # - { package: asciidoc }
-    # - { package: libevent-devel }
-    # - { package: libyaml-devel }
-    # - { package: libevent-devel }
-    # - man-db
-    # - lynx
 
 - name: Install development packages
   yum: name={{ item.package }}
@@ -138,8 +127,6 @@
     - { package: docbook2X }
     - { package: xmlto }
   when: ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" ) and ansible_distribution_major_version|int == 7
-    # - { package: net-snmp-agent-libs }
-    # - { package: perl-Locale-Msgfmt }
 
 # source: https://github.com/rpm-software-management/yum-utils/blob/master/needs-restarting.py
 - name: install Red Hat version of 'needs-restarting'

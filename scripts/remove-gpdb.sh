@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RANGE="41 45"
+RANGE="61 65"
 USER="jomoon"
 
 for i in `seq $RANGE`

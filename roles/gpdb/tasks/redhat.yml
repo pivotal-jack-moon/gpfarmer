@@ -354,14 +354,14 @@
     - gpdb_install == True and gpdb_initdb_single == False
 
 - name: Create hostfile file for single node
-  shell: "sed -n $(( $( grep -n master {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1 ))p {{ playbook_dir }}/ansible-hosts | awk '{print $1}' > {{ playbook_dir }}/hostfile"
+  shell: "rm -f {{ playbook_dir }}/hostfile; sed -n $(( $( grep -n master {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1 ))p {{ playbook_dir }}/ansible-hosts | awk '{print $1}' > {{ playbook_dir }}/hostfile"
   delegate_to: 127.0.0.1
   when:
     - inventory_hostname in groups['master']
-    - gpdb_install == True
+    - gpdb_install == True and gpdb_initdb_single == True
 
 - name: Create hostfile file for multiple nodes
-  shell: "tail -n +$(($( grep -n segments {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1)) {{ playbook_dir }}/ansible-hosts | awk '{print $1}' >> {{ playbook_dir }}/hostfile"
+  shell: "rm -f {{ playbook_dir }}/hostfile;  tail -n +$(($( grep -n segments {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1)) {{ playbook_dir }}/ansible-hosts | awk '{print $1}' >> {{ playbook_dir }}/hostfile"
   delegate_to: 127.0.0.1
   when:
     - inventory_hostname in groups['master']
@@ -394,7 +394,6 @@
   when:
     - inventory_hostname in groups['master']
     - gpdb_install == True
-
 
 - name: Fix settings in gpinitsystem config file
   lineinfile:

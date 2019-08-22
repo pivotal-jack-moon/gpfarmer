@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST_NAME="mdw4"
+HOST_NAME="mdw6"
 
 ssh gpadmin@$HOST_NAME "source /usr/local/greenplum-db/greenplum_path.sh && source /usr/local/greenplum-cc-web/gpcc_path.sh && gpcc stop ;
 rm -rf /usr/local/greenplum-cc-web* ;

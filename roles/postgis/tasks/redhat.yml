@@ -5,13 +5,13 @@
 # postgis-2.1.5+pivotal.2-gp5-rhel7-x86_64.gppkg
 
 - name: Copy postgis gppkg file
-  copy: src=postgis-{{ postgis_prefix_major_version }}{{ postgis_major_version }}.{{ postgis_minor_version }}.{{ postgis_patch_version }}{{ postgis_gpdb_version }}-{{ postgis_rhel_version }}-x86_64.gppkg dest=/home/gpadmin/ mode=0644 owner=gpadmin group=gpadmin
+  copy: src=postgis-{{ postgis_prefix_major_version }}{{ postgis_major_version }}.{{ postgis_minor_version }}{{ postgis_patch_version }}-{{ postgis_gpdb_version }}-{{ postgis_rhel_version }}-x86_64.gppkg dest=/home/gpadmin/ mode=0644 owner=gpadmin group=gpadmin
   # copy: src=postgis-{{ postgis_major_version }}.{{ postgis_minor_version }}.{{ postgis_patch_version }}+pivotal.2-{{ postgis_gpdb_version }}-{{ postgis_rhel_version }}-x86_64.gppkg dest=/home/gpadmin/ mode=0644 owner=gpadmin group=gpadmin
   #  when: postgis_installed.stat.exists != True
 
 - name: Install postgis package
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && gppkg -i /home/gpadmin/postgis-{{ postgis_prefix_major_version }}{{ postgis_major_version }}.{{ postgis_minor_version }}.{{ postgis_patch_version }}{{ postgis_gpdb_version }}-{{ postgis_rhel_version }}-x86_64.gppkg )
+  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && gppkg -i /home/gpadmin/postgis-{{ postgis_prefix_major_version }}{{ postgis_major_version }}.{{ postgis_minor_version }}{{ postgis_patch_version }}-{{ postgis_gpdb_version }}-{{ postgis_rhel_version }}-x86_64.gppkg )
   #  when: postgis_installed.stat.exists != True
 
 - name: Verify that database for postgis is installed
@@ -30,13 +30,13 @@
   become_user: gpadmin
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && /usr/local/greenplum-db/share/postgresql/contrib/postgis-{{ postgis_major_version }}.{{ postgis_minor_version }}/postgis_manager.sh {{ postgis_database_name }} install )
   register: postgis_database_installed
-  when: inventory_hostname in groups['master'] and postgis_major_version != 2 and postgis_minor_version != 0
+  when: inventory_hostname in groups['master'] and postgis_major_version == 2 and postgis_minor_version >= 0
 
 - name: Enable PostGIS Support for database created
   become_user: gpadmin
   shell: ( . /usr/local/greenplum-db/greenplum_path.sh && psql -d {{ postgis_database_name }} -f $GPHOME/share/postgresql/contrib/postgis-{{ postgis_major_version }}.{{ postgis_minor_version }}/postgis.sql && psql -d {{ postgis_database_name }} -f $GPHOME/share/postgresql/contrib/postgis-{{ postgis_major_version }}.{{ postgis_minor_version }}/spatial_ref_sys.sql )
   register: postgis_database_installed
-  when: inventory_hostname in groups['master'] and postgis_major_version == 2 and postgis_minor_version == 0
+  when: inventory_hostname in groups['master'] and postgis_major_version < 2 and postgis_minor_version >= 0
 
   # export GDAL_DATA=$GPHOME/share/gdal
   # export POSTGIS_ENABLE_OUTDB_RASTERS=0

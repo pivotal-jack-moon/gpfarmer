@@ -1,13 +1,14 @@
 ---
 # greenplum-cc-web-6.0.0-beta.5-rhel7_x86_64.zip
-gpcc2_major_version: 3
-gpcc2_minor_version: 3.3
-# gpcc2_build_version:
-gpcc2_rhel_name: LINUX-
-# gpcc2_rhel_name: rhel7_
+# greenplum-cc-web-4.7.0-LINUX-x86_64.zip
+gpcc_major_version: 4
+gpcc_minor_version: 7.0
+# gpcc_build_version:
+gpcc_rhel_name: LINUX-
+# gpcc_rhel_name: rhel7_
 
 gpdb_initdb_only_single: false
 gpdb_initdb_with_standby: true
-gpcc2_network_range: "192.168.0.0/24"
-gpcc2_subnet_range: 24
-gpcc2_password: "changeme"
+gpcc_network_range: "192.168.0.0/24"
+gpcc_subnet_range: 24
+gpcc_password: "changeme"

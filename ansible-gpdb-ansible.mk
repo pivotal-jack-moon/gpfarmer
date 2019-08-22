@@ -1,3 +1,3 @@
 
-ansible-update-gpdb:
-	cd roles/gpdb-ansible && git pull
+# ansible-update-gpdb:
+# 	cd roles/gpdb-ansible && git pull
