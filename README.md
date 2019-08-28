@@ -52,7 +52,7 @@ $ sudo yum install ansible
 ~~~
 
 
-# Download / configure run gpfarmer
+# Download / configure / run gpfarmer
 $ git clone https://github.com/pivotal-jack-moon/gpfarmer
 
 $ cd gpfarmer
@@ -184,5 +184,8 @@ $ make install
 
 
 # Planning
-Playbook to remove GPDB and other extensions
-Playbook to update GPDB and other extensions
+Adding playbook to remove GPDB and other extensions
+Adding playbook to update GPDB and other extensions
+Converting Makefile.init from original project.
+Documenting how to make OS template for GPDB and GPFarmer.
+
