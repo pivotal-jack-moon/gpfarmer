@@ -35,15 +35,20 @@ RHEL and CentOS 5/6/7
 
 # Prerequisite
 MacOS or Fedora/CentOS/RHEL installed with ansible as ansible host.
+
 At least three supported OS should be prepared with yum repository configured.
 
 
 # Prepare ansible host to run gpfarmer
 * MacOS
+~~~
 $ sudo brew install ansible
+~~~
 
 * Fedora/CentOS/RHEL
+~~~
 $ sudo yum install ansible
+~~~
 
 
 # Download / configure run gpfarmer
