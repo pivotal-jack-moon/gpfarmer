@@ -9,7 +9,8 @@ saving time.
 
 # Where is GPFarmer from and how is it changed?
 GPFarmer has been developing based on gpdb-ansible project - https://github.com/andreasscherbaum/gpdb-ansible.
-Since it only provide install GPDB on a single host GPFarmer support multiple hosts and many extensions to deploy them.
+Since it only provide install GPDB on a single host GPFarmer support multiple hosts and many extensions to deploy them and support two
+binary type, rpm and bin..
 
 # Supported GPDB and extension version
 GPDB 4.x/5.x/6.x
