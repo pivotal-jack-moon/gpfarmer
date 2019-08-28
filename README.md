@@ -1,7 +1,15 @@
 # What is GPFarmer?
+GPFarmer is ansible playbook to deploy Greenplum Database conveniently on Baremetal, Virtual Machines and Cloud Infrastructure.
+It provide also many extensions to install such GPText, madlib, GPCC, postgis as well. The main purpose of this project is actually
+very simple. Because i have many jobs to install different kind of GPDB versions and reproduce issues & test features  as a support
+engineer. I just want to spend less time for it.
 
-# Where is GPFarmer from?
-https://github.com/andreasscherbaum/gpdb-ansible
+If you are working with GPDB such as Developer, Administrator, Field Engineer or Data Scientist you could also use it very useful with
+saving time.
+
+# Where is GPFarmer from and how is it changed?
+GPFarmer has been developing based on gpdb-ansible project - https://github.com/andreasscherbaum/gpdb-ansible.
+Since it only provide install GPDB on a single host GPFarmer support multiple hosts and many extensions to deploy them.
 
 # Supported GPDB and extension version
 GPDB 4.x/5.x/6.x
@@ -26,18 +34,15 @@ RHEL and CentOS 5/6/7
 
 
 # Prerequisite
-MacOS or Fedora/CentOS/RHEL installed with ansible.
-
+MacOS or Fedora/CentOS/RHEL installed with ansible as ansible host.
 At least three supported OS should be prepared with yum repository configured.
 
 
 # Prepare ansible host to run gpfarmer
 * MacOS
-
 $ sudo brew install ansible
 
 * Fedora/CentOS/RHEL
-
 $ sudo yum install ansible
 
 
@@ -174,5 +179,4 @@ $ make install
 
 # Planning
 Playbook to remove GPDB and other extensions
-
 Playbook to update GPDB and other extensions
