@@ -57,23 +57,29 @@ $ git clone https://github.com/pivotal-jack-moon/gpfarmer
 
 $ cd gpfarmer
 
+$ vi group_vars/all.yml
+~~~
+ansible_ssh_pass: changeme          # It should be changed with password of sudo user in hosts that gpdb would be installed.
+ansible_become_pass: rmsidwoalfh    # It should be changed with password of user in ansible host that gpfarmer would be run.
+~~~
+
 $ vi ansible-hosts
 ~~~
 [all:vars]
 ssh_key_filename="id_rsa"
-remote_machine_username="gpadmin"
-remote_machine_password="changeme"
+remote_machine_username="gpadmin"    # Replace with username of gpdb administrator
+remote_machine_password="changeme"   # Replace with password of user
 
 [master]
-mdw6 ansible_ssh_host=192.168.0.61
+mdw6 ansible_ssh_host=192.168.0.61    # Change IP address of gpdb master host
 
 [standby]
-smdw6 ansible_ssh_host=192.168.0.62
+smdw6 ansible_ssh_host=192.168.0.62   # Change IP address of gpdb standby host
 
 [segments]
-sdw6-1 ansible_ssh_host=192.168.0.63
-sdw6-2 ansible_ssh_host=192.168.0.64
-sdw6-3 ansible_ssh_host=192.168.0.65
+sdw6-1 ansible_ssh_host=192.168.0.63  # Change IP address of gpdb segment host
+sdw6-2 ansible_ssh_host=192.168.0.64  # Change IP address of gpdb segment host
+sdw6-3 ansible_ssh_host=192.168.0.65  # Change IP address of gpdb segment host
 ~~~
 
 $ vi role/gpdb/var/main.yml
@@ -82,9 +88,9 @@ $ vi role/gpdb/var/main.yml
 google_cloud: false
 
 # number of Greenplum Database segments
-gpdb_number_segments: 2
-gpdb_mirror_enable: true
-gpdb_spread_mirrors: "-S"
+gpdb_number_segments: 2               # Change how many instances want to run
+gpdb_mirror_enable: true              # Enable if mirror instances is run or not
+gpdb_spread_mirrors: "-S"             # Enable if spread mirror is used or not
 
 # if you change the version, Ansible will attempt a database upgrade
 # greenplum-db-4.3.9.0-build-1-RHEL5-x86_64.zip
