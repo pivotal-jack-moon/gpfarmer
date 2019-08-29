@@ -8,7 +8,7 @@ If you are working with GPDB such as Developer, Administrator, Field Engineer or
 saving time.
 
 # Where is GPFarmer from and how is it changed?
-GPFarmer has been developing based on gpdb-ansible project - https://github.com/andreasscherbaum/gpdb-ansible.
+GPFarmer has been developing based on gpdb-ansible project - https://github.com/andreasscherbaum/gpdb-ansible. Andreas! Thanks for sharing it.
 Since it only provide install GPDB on a single host GPFarmer support multiple hosts and many extensions to deploy them and support two
 binary type, rpm and bin..
 
