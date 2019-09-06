@@ -60,7 +60,7 @@ $ cd gpfarmer
 $ vi group_vars/all.yml
 ~~~
 ansible_ssh_pass: changeme          # It should be changed with password of sudo user in hosts that gpdb would be installed.
-ansible_become_pass: rmsidwoalfh    # It should be changed with password of user in ansible host that gpfarmer would be run.
+ansible_become_pass: changeme       # It should be changed with password of user in ansible host that gpfarmer would be run.
 ~~~
 
 $ vi ansible-hosts
