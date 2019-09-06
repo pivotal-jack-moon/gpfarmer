@@ -1,14 +1,14 @@
 ---
 - name: Check if any version of Greenplum Text is already installed
-  stat: path=/usr/local/greenplum-text
+  stat: path={{ gptext_base_dir }}/greenplum-text
   register: gptext_installed
 
 - name: Check if the Greenplum Text version is already installed
-  stat: path=/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}
+  stat: path={{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}
   register: gptext_version_installed
 
-- name: Sanity check for /usr/local/greenplum-text
-  fail: msg="/usr/local/greenplum-text is supposed to be a symlink!"
+- name: Sanity check for {{ gptext_base_dir }}/greenplum-text
+  fail: msg="{{ gptext_base_dir }}/greenplum-text is supposed to be a symlink!"
   when: gptext_installed.stat.exists == True and gptext_installed.stat.islnk != True
 
 - name: Set name for binary installer file (name includes build number)
@@ -30,13 +30,13 @@
     gptext_upgrade: False
     gptext_linkchange: False
 
-# Non-existent /usr/local/greenplum-text is a new installation
+# Non-existent {{ gptext_base_dir }}/greenplum-text is a new installation
 - name: Identify Greenplum Text Installation
   set_fact:
     gptext_install: True
   when: gptext_installed.stat.exists != True
 
-# If /usr/local/greenplum-text-{ new version } does not exists, it's an upgrade
+# If {{ gptext_base_dir }}/greenplum-text-{ new version } does not exists, it's an upgrade
 - name: Identify Greenplum Text Upgrade
   set_fact:
     gptext_upgrade: True
@@ -46,7 +46,7 @@
 - name: Identify Greenplum Text Linkchange
   set_fact:
     gptext_linkchange: True
-  when: gptext_installed.stat.exists == True and gptext_version_installed.stat.exists == True and gptext_installed.stat.lnk_source != "/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}"
+  when: gptext_installed.stat.exists == True and gptext_version_installed.stat.exists == True and gptext_installed.stat.lnk_source != "{{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}"
 
 - name: Greenplum Text Installation
   debug: msg="New Greenplum Text installation"
@@ -107,7 +107,7 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^INSTALL_LOC=', line: 'INSTALL_LOC=/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}', state: present, backrefs: no }
+    - { regexp: '^INSTALL_LOC=', line: 'INSTALL_LOC={{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}', state: present, backrefs: no }
     - { regexp: '^more << EOLICENSE', line: 'cat << EOLICENSE', state: present, backrefs: yes }
     - { regexp: 'read INSTALL_LOC LEFTOVER', line: '#read INSTALL_LOC LEFTOVER', state: present, backrefs: yes }
     - { regexp: 'read REPLY LEFTOVER', line: 'REPLY=yes # read REPLY LEFTOVER', state: present, backrefs: yes }
@@ -123,19 +123,19 @@
     - gptext_install == True or gptext_upgrade == True
 
 - name: Create directory for new Greenplum Text version
-  file: path=/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }} state=directory mode=0755 owner=gpadmin group=gpadmin
+  file: path={{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }} state=directory mode=0755 owner=gpadmin group=gpadmin
   when:
     - gptext_upgrade == True or gptext_install == True
     # - gptext_upgrade == True or gptext_linkchange == True and gptext_install == True
 
 - name: Create directory for new Solr search engine
-  file: path=/usr/local/greenplum-solr state=directory mode=0755 owner=gpadmin group=gpadmin
+  file: path={{ gptext_base_dir }}/greenplum-solr state=directory mode=0755 owner=gpadmin group=gpadmin
   when:
     - gptext_upgrade == True or gptext_install == True
     # - gptext_upgrade == True or gptext_linkchange == True and gptext_install == True
 
 - name: Repoint symlink to new Greenplum Text version
-  file: path=/usr/local/greenplum-text src=/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }} state=link mode=0755 owner=gpadmin group=gpadmin
+  file: path={{ gptext_base_dir }}/greenplum-text src={{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }} state=link mode=0755 owner=gpadmin group=gpadmin
   when:
     - gptext_upgrade == True or gptext_install == True
     # - gptext_upgrade == True or gptext_linkchange == True and gptext_install == True
@@ -155,9 +155,9 @@
     - inventory_hostname in groups['master']
     - gptext_install == True or gptext_upgrade == True
 
-- name: Install Greenplum Text software in /usr/local
+- name: Install Greenplum Text software in {{ gptext_base_dir }}
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && /home/gpadmin/gptext-tmp-install/{{ binary_installer_file }}.bin -c /home/gpadmin/gptext-tmp-install/gptext_install_config )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && /home/gpadmin/gptext-tmp-install/{{ binary_installer_file }}.bin -c /home/gpadmin/gptext-tmp-install/gptext_install_config )
   async: 300
   poll: 5
   when:
@@ -172,7 +172,7 @@
     - inventory_hostname in groups['master']
 
 - name: Check again if the Greenplum Text version is already installed
-  stat: path=/usr/local/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}
+  stat: path={{ gptext_base_dir }}/greenplum-text-{{ gptext_major_version }}.{{ gptext_minor_version }}
   register: gptext_version_installed_verify
 
 - name: Stop if Greenplum Text software is not installed
@@ -182,13 +182,13 @@
 
 - name: Verify that database for gptext is installed
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && psql -tAc "SELECT 100 FROM pg_database WHERE datname='{{ gptext_database_name }}'" )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && psql -tAc "SELECT 100 FROM pg_database WHERE datname='{{ gptext_database_name }}'" )
   register: gptext_database_installed
   when: inventory_hostname in groups['master']
 
 - name: Create database for gptext
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && createdb {{ gptext_database_name }} )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && createdb {{ gptext_database_name }} )
   register: gptext_database_created
   when:
     - inventory_hostname in groups['master']
@@ -196,13 +196,13 @@
 
 - name: Install the GPText user-defined functions and other objects in the database
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-text/greenplum-text_path.sh && gptext-installsql {{ gptext_database_name }} )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && . {{ gptext_base_dir }}/greenplum-text/greenplum-text_path.sh && gptext-installsql {{ gptext_database_name }} )
   register: gptext_user_functions_installed
   when: inventory_hostname in groups['master']
 
 - name: Start ZkManager
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-text/greenplum-text_path.sh && zkManager start )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && . {{ gptext_base_dir }}/greenplum-text/greenplum-text_path.sh && zkManager start )
   async: 60
   poll: 5
   register: gptext_zkmanager_started
@@ -210,7 +210,7 @@
 
 - name: Start GPText
   become_user: gpadmin
-  shell: ( . /usr/local/greenplum-db/greenplum_path.sh && . /usr/local/greenplum-text/greenplum-text_path.sh && gptext-start )
+  shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && . {{ gptext_base_dir }}/greenplum-text/greenplum-text_path.sh && gptext-start )
   async: 60
   poll: 5
   register: gptext_started

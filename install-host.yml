@@ -1,15 +1,5 @@
 ---
-- hosts: all
-  become: yes
-  roles:
-    - gpdb
-    - gptext
-
 - hosts: mdw6
   become: yes
   roles:
     - gpcc
-    - madlib
-    - postgis
-
-

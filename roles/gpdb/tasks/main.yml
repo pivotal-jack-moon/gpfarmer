@@ -1,13 +1,11 @@
 ---
 
-# Install Greenplum Database v4
-
+# Install Greenplum Database
 
 # for now fail if it's not a Red Hat based system
-- name: Check OS (GPDB v4)
+- name: Check OS ( GPDB )
   fail: msg="Not a Red Hat based system!"
   when: ansible_os_family != 'RedHat'
-
 
 - name: Installation for Red Hat / CentOS
   include: redhat.yml
