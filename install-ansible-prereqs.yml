@@ -10,21 +10,18 @@
 
 - hosts: all
   become: yes
-  gather_facts: True
+  gather_facts: true
   tasks:
     - name: Install sshpass
       yum: name=sshpass state=present
 
     - name: Add the inventory into /etc/hosts
-      lineinfile:
-        state: present
-        insertafter: EOF
+      template:
+        src: "{{ playbook_dir }}/hosts.j2"
         dest: /etc/hosts
-        regexp: '.*{{ item }}$'
-        line: "{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }} {{item}}.jtest.pivotal.io {{item}}"
-      with_items:
-        - "{{ groups['all'] }}"
-      when: hostvars[item]['ansible_eth0']['ipv4'] is defined and ansible_distribution_major_version is version_compare('2', '>=')
+        owner: root
+        group: root
+        mode: 0644
 
 - hosts: all
   become: yes
@@ -69,14 +66,13 @@
       register: ssh_fingerprint_add
       with_items:
         - "{{ groups['all'] }}"
-      when:
-        - inventory_hostname in groups['master']
+          #      when:
+          #- inventory_hostname in groups['master']
 
     - name: Generate ssh key on local machine
       shell: "/usr/bin/ssh-keygen -t rsa -f ~/.ssh/{{ssh_key_filename}} -P ''"
       register: ssh_key_creation
       when:
-        - inventory_hostname in groups['master']
         - ssh_key_file_exists_check is defined and ssh_key_file_exists_check.results[0].stat.exists == false and ssh_key_file_exists_check.results[1].stat.exists == false
       failed_when: ssh_key_creation.rc != 0
 
@@ -85,8 +81,6 @@
       register: ssh_copy_id_execution
       with_items:
         - "{{ groups['all'] }}"
-      when:
-        - inventory_hostname in groups['master']
       failed_when:
         - ssh_copy_id_execution.rc != 0
 

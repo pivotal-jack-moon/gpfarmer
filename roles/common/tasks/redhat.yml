@@ -37,15 +37,6 @@
   when: "item | ipaddr('{{ common_network_range }}')"
   with_items: "{{ ansible_all_ipv4_addresses }}"
 
-- name: Add the inventory into /etc/hosts
-  template:
-    src: hosts.j2
-    dest: /etc/hosts
-    owner: root
-    group: root
-    mode: 0644
-  # when: hostvars['item']['ansible_eth0']['ipv4'] is defined
-
 - name: basic packages
   yum: name={{ item }} state=present
   with_items:
