@@ -44,7 +44,6 @@
     - nano
     - screen
     - psmisc
-    - bind-utils
     - rsync
     - wget
     - mutt

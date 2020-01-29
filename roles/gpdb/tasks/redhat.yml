@@ -28,7 +28,7 @@
 
 - name: Set name for binary installer file (name includes build number)
   set_fact:
-    binary_installer_file: greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }}-{{ gpdb_build_version }}-{{ gpdb_rhel_name }}-x86_64
+    binary_installer_file: greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }}.{{ gpdb_build_version }}-{{ gpdb_rhel_name }}-x86_64
   when: gpdb_build_version is defined and gpdb_build_version != None
 
 - name: Set name for binary installer file (name does not include build number)
@@ -234,11 +234,11 @@
 - block:
   - name: Unzip Greenplum Database {{ gpdb_major_version }} archive (Ansible < 2.2)
     unarchive: src=/home/gpadmin/{{ binary_installer_file }}.zip dest=/home/gpadmin/gpdb{{ gpdb_major_version }}-tmp-install remote_src=yes copy=no owner=gpadmin group=gpadmin
-    when: ansible_version.full | version_compare('2.2.0.0', operator='<', strict=False)
+    when: ansible_version.full is version_compare('2.2.0.0', operator='<', strict=False)
 
   - name: Unzip Greenplum Database {{ gpdb_major_version }} archive (Ansible >= 2.2)
     unarchive: src=/home/gpadmin/{{ binary_installer_file }}.zip dest=/home/gpadmin/gpdb{{ gpdb_major_version }}-tmp-install remote_src=yes owner=gpadmin group=gpadmin
-    when: ansible_version.full | version_compare('2.2.0.0', operator='>=', strict=False)
+    when: ansible_version.full is version_compare('2.2.0.0', operator='>=', strict=False)
 
   when:
     - gpdb_install == True or gpdb_upgrade == True
@@ -351,6 +351,7 @@
     - gpdb_install == True and gpdb_initdb_single == False
 
 - name: Create hostfile file for single node
+  become_user: root
   shell: "rm -f {{ playbook_dir }}/hostfile; sed -n $(( $( grep -n master {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1 ))p {{ playbook_dir }}/ansible-hosts | awk '{print $1}' > {{ playbook_dir }}/hostfile"
   delegate_to: 127.0.0.1
   when:
@@ -358,18 +359,12 @@
     - gpdb_install == True and gpdb_initdb_single == True
 
 - name: Create hostfile file for multiple nodes
+  become_user: root
   shell: "rm -f {{ playbook_dir }}/hostfile;  tail -n +$(($( grep -n segments {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1)) {{ playbook_dir }}/ansible-hosts | awk '{print $1}' >> {{ playbook_dir }}/hostfile"
   delegate_to: 127.0.0.1
   when:
     - inventory_hostname in groups['master']
     - gpdb_install == True and gpdb_initdb_single == False
-
-- name: Appened Standby Master hostname into hostfile
-  shell: "head -n $(($( grep -n standby {{ playbook_dir }}/ansible-hosts | cut -d ':' -f 1 ) + 1 )) {{ playbook_dir }}/ansible-hosts | sed '$!d' | awk '{print $1}' >> {{ playbook_dir }}/hostfile"
-  delegate_to: 127.0.0.1
-  when:
-    - inventory_hostname in groups['master']
-    - gpdb_install == True and gpdb_initdb_single == False and gpdb_initdb_with_standby == True
 
 - name: Copy hostfile files
   copy: src={{ playbook_dir }}/hostfile dest=/home/gpadmin/hostfile owner=gpadmin group=gpadmin mode=0644
@@ -425,11 +420,12 @@
     - inventory_hostname in groups['master']
     - gpdb_install == True and gpdb_mirror_enable == True
 
-
 - name: Repoint symlink to new Greenplum Database version
   file: path={{ gpdb_base_dir }}/greenplum-db src={{ gpdb_base_dir }}/greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }} state=link
   when:
-   - gpdb_upgrade == True or gpdb_linkchange == True and gpdb_install == True
+    - gpdb_linkchange == True and gpdb_install == True
+      # - gpdb_upgrade == True or gpdb_linkchange == True and gpdb_install == True
+
   # - inventory_hostname in groups['master']
 
 # Status: Config files ready, initialize database if required
@@ -486,15 +482,15 @@
     - gpdb_initdb_single == False and seg_serialized_install == True
   # changed_when: False
 
-- name: Repoint symlink to new Greenplum Database version
-  file: path={{ gpdb_base_dir }}/greenplum-db src={{ gpdb_base_dir }}/greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }} state=link
+      #- name: Repoint symlink to new Greenplum Database version
+      #file: path={{ gpdb_base_dir }}/greenplum-db src={{ gpdb_base_dir }}/greenplum-db-{{ gpdb_major_version }}.{{ gpdb_minor_version }} state=link
   # when:
   # - gpseginstall_installed == True
 
 - name: Initialize Greenplum Database cluster
   become_user: gpadmin
   shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && gpinitsystem -a -c /home/gpadmin/gpinitsystem_config -h /home/gpadmin/hostfile {{ gpdb_spread_mirrors }} )
-  async: 300
+  async: 600
   poll: 5
   register: init_db
   when:
@@ -505,7 +501,7 @@
 - name: Initialize Greenplum Database cluster with standby master
   become_user: gpadmin
   shell: ( . {{ gpdb_base_dir }}/greenplum-db/greenplum_path.sh && gpinitsystem -c /home/gpadmin/gpinitsystem_config -a {{ gpdb_spread_mirrors }} -h /home/gpadmin/hostfile -s {{ smdw_hostname }} )
-  async: 300
+  async: 1800
   poll: 5
   register: init_db
   when:

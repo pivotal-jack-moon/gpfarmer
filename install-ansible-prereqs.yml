@@ -97,6 +97,7 @@
       debug:
         var: ssh_connection_test.stdout_lines
 
+
 # FIXME: Debian versus Red Hat
 - hosts: all
   # will be selected on a per-task basis, to accomodate different methods
@@ -191,4 +192,3 @@
         line: "sudo /bin/bash --login"
         state: "present"
       become: false
-

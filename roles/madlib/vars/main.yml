@@ -1,8 +1,8 @@
 ---
 madlib_major_version: 1
-madlib_minor_version: 16+3
+madlib_minor_version: 15.1
 madlib_patch_version:
-madlib_gpdb_version: gp6
+madlib_gpdb_version: gp5
 madlib_rhel_version: rhel7
 madlib_database_name: testdb
 madlib_mdw_hostname: mdw6

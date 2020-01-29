@@ -36,31 +36,34 @@ RHEL and CentOS 5/6/7
 
 # Prerequisite
 MacOS or Fedora/CentOS/RHEL installed with ansible as ansible host.
-
-At least three supported OS should be prepared with yum repository configured.
-
+At least three supported OS should be prepared with yum repository configured
 
 # Prepare ansible host to run gpfarmer
 * MacOS
 ~~~
-$ sudo brew install ansible
+$ xcode-select --install
+$ brew install ansible
+$ brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 ~~~
 
 * Fedora/CentOS/RHEL
 ~~~
 $ sudo yum install ansible
+$ sudo yum install sshpass
 ~~~
 
+## Prepareing OS
+Configure Yum / Local & EPEL Repostiory
 
 # Download / configure / run gpfarmer
 $ git clone https://github.com/pivotal-jack-moon/gpfarmer
 
 $ cd gpfarmer
 
-$ vi group_vars/all.yml
+$ vi Makefile
 ~~~
-ansible_ssh_pass: changeme          # It should be changed with password of sudo user in hosts that gpdb would be installed.
-ansible_become_pass: changeme       # It should be changed with password of user in ansible host that gpfarmer would be run.
+ANSIBLE_HOST_PASS="changeme"  # It should be changed with password of user in ansible host that gpfarmer would be run.
+ANSIBLE_TARGET_PASS="changeme"  # # It should be changed with password of sudo user in managed nodes that gpdb would be installed.
 ~~~
 
 $ vi ansible-hosts
@@ -136,7 +139,7 @@ gptext_gpdb_version:
 gptext_java_version: 1.8.0
 gptext_rhel_name: rhel6
 gptext_database_name: testdb
-gptext_all_hosts: "mdw6 smdw6 sdw6-1 sdw6-2 sdw6-3"
+gptext_all_hosts: "mdw6 smdw6 sdw6-1 sdw6-2 sdw6-3"   # The number of all nodes should be 3, 5 or 7
 ~~~
 
 $ vi role/madlib/var/main.yml

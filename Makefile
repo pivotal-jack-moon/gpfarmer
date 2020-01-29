@@ -2,6 +2,8 @@
 
 USERNAME=jomoon
 COMMON="yes"
+ANSIBLE_HOST_PASS="rmsidwoalfh"
+ANSIBLE_TARGET_PASS="changeme"
 # include ./*.mk
 
 GPHOSTS := $(shell grep -i '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ./ansible-hosts | sed -e "s/ ansible_ssh_host=/,/g")
@@ -28,6 +30,7 @@ all:
 	done
 
 init:	install-host.yml update-host.yml
+	$(shell sed -i -e '2s/.*/ansible_become_pass: ${ANSIBLE_TARGET_PASS}/g' ./group_vars/all.yml)
 	@echo ""
 	@for GPHOST in ${GPHOSTS}; do \
 		IP=$${GPHOST#*,}; \
@@ -58,6 +61,7 @@ update:
 no_targets__:
 role-update:
 	sh -c "$(MAKE) -p no_targets__ | awk -F':' '/^[a-zA-Z0-9][^\$$#\/\\t=]*:([^=]|$$)/ {split(\$$1,A,/ /);for(i in A)print A[i]}' | grep -v '__\$$' | grep '^ansible-update-*'" | xargs -n 1 make --no-print-directory
+        $(shell sed -i -e '2s/.*/ansible_become_pass: ${ANSIBLE_HOST_PASS}/g' ./group_vars/all.yml )
 
 ssh:
 	ssh -o UserKnownHostsFile=./known_hosts ${USERNAME}@${IP}
